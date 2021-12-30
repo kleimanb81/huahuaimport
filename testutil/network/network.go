@@ -20,6 +20,7 @@ import (
 	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/ChihuahuaChain/chihuahua/app"
+	"github.com/ChihuahuaChain/chihuahua/testutil"
 )
 
 type (
@@ -27,15 +28,15 @@ type (
 	Config  = network.Config
 )
 
-// New creates instance with fully configured cosmos network.
-// Accepts optional config, that will be used in place of the DefaultConfig() if provided.
-func New(t *testing.T, config network.Config, genAccNames ...string) (*network.Network, keyring.Keyring) {
-	kr := generateKeyring(t)
+// New creates instance with fully configured Chihuahua network, along with
+// creating a funded account for each name provided
+func New(t *testing.T, config network.Config, accounts ...string) (*network.Network, keyring.Keyring) {
+	kr := testutil.GenerateKeyring(t)
 
 	// add genesis accounts
-	genAuthAccs := make([]authtypes.GenesisAccount, len(genAccNames))
-	genBalances := make([]banktypes.Balance, len(genAccNames))
-	for i, name := range genAccNames {
+	genAuthAccs := make([]authtypes.GenesisAccount, len(accounts))
+	genBalances := make([]banktypes.Balance, len(accounts))
+	for i, name := range accounts {
 		a, b := newGenAccout(kr, name, 1000000000000)
 		genAuthAccs[i] = a
 		genBalances[i] = b
@@ -86,6 +87,7 @@ func DefaultConfig() network.Config {
 	}
 }
 
+// addGenAccounts adds the provided accounts to the genesis state in the config
 func addGenAccounts(cfg network.Config, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance) (network.Config, error) {
 	// set the accounts in the genesis state
 	var authGenState authtypes.GenesisState
@@ -109,13 +111,10 @@ func addGenAccounts(cfg network.Config, genAccounts []authtypes.GenesisAccount, 
 	return cfg, nil
 }
 
+// newGenAccount creates a genesis account with some default staking asset and
+// some unique token.
 func newGenAccout(kr keyring.Keyring, name string, amount int64) (authtypes.GenesisAccount, banktypes.Balance) {
-	info, mnm, err := kr.NewMnemonic(name, keyring.English, "", "", hd.Secp256k1)
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = kr.NewAccount(name, mnm, "1234", "", hd.Secp256k1)
+	info, _, err := kr.NewMnemonic(name, keyring.English, "", "", hd.Secp256k1)
 	if err != nil {
 		panic(err)
 	}
@@ -132,10 +131,4 @@ func newGenAccout(kr keyring.Keyring, name string, amount int64) (authtypes.Gene
 	}
 
 	return authtypes.NewBaseAccount(info.GetAddress(), info.GetPubKey(), 0, 0), bal
-}
-
-func generateKeyring(t *testing.T) keyring.Keyring {
-	t.Helper()
-	kb := keyring.NewInMemory()
-	return kb
 }
