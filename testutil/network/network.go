@@ -14,13 +14,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/tendermint/spm/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/ChihuahuaChain/chihuahua/app"
-	"github.com/ChihuahuaChain/chihuahua/testutil"
 )
 
 type (
@@ -30,26 +28,10 @@ type (
 
 // New creates instance with fully configured Chihuahua network, along with
 // creating a funded account for each name provided
-func New(t *testing.T, config network.Config, accounts ...string) (*network.Network, keyring.Keyring) {
-	kr := testutil.GenerateKeyring(t)
-
-	// add genesis accounts
-	genAuthAccs := make([]authtypes.GenesisAccount, len(accounts))
-	genBalances := make([]banktypes.Balance, len(accounts))
-	for i, name := range accounts {
-		a, b := newGenAccout(kr, name, 1000000000000)
-		genAuthAccs[i] = a
-		genBalances[i] = b
-	}
-
-	config, err := addGenAccounts(config, genAuthAccs, genBalances)
-	if err != nil {
-		panic(err)
-	}
-
+func New(t *testing.T, config network.Config) *network.Network {
 	net := network.New(t, config)
 	t.Cleanup(net.Cleanup)
-	return net, kr
+	return net
 }
 
 // DefaultConfig will initialize config for the network with custom application,
@@ -85,50 +67,4 @@ func DefaultConfig() network.Config {
 		SigningAlgo:     string(hd.Secp256k1Type),
 		KeyringOptions:  []keyring.Option{},
 	}
-}
-
-// addGenAccounts adds the provided accounts to the genesis state in the config
-func addGenAccounts(cfg network.Config, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance) (network.Config, error) {
-	// set the accounts in the genesis state
-	var authGenState authtypes.GenesisState
-	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[authtypes.ModuleName], &authGenState)
-
-	accounts, err := authtypes.PackAccounts(genAccounts)
-	if err != nil {
-		return cfg, err
-	}
-
-	authGenState.Accounts = append(authGenState.Accounts, accounts...)
-	cfg.GenesisState[authtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&authGenState)
-
-	// set the balances in the genesis state
-	var bankGenState banktypes.GenesisState
-	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[banktypes.ModuleName], &bankGenState)
-
-	bankGenState.Balances = append(bankGenState.Balances, genBalances...)
-	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(&bankGenState)
-
-	return cfg, nil
-}
-
-// newGenAccount creates a genesis account with some default staking asset and
-// some unique token.
-func newGenAccout(kr keyring.Keyring, name string, amount int64) (authtypes.GenesisAccount, banktypes.Balance) {
-	info, _, err := kr.NewMnemonic(name, keyring.English, "", "", hd.Secp256k1)
-	if err != nil {
-		panic(err)
-	}
-
-	// create coin
-	balances := sdk.NewCoins(
-		sdk.NewCoin(fmt.Sprintf("%stoken", name), sdk.NewInt(amount)),
-		sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(amount)),
-	)
-
-	bal := banktypes.Balance{
-		Address: info.GetAddress().String(),
-		Coins:   balances.Sort(),
-	}
-
-	return authtypes.NewBaseAccount(info.GetAddress(), info.GetPubKey(), 0, 0), bal
 }
