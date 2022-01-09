@@ -607,10 +607,18 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 // RegisterUpgradeHandlers returns upgrade handlers
 func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
 	app.UpgradeKeeper.SetUpgradeHandler(v1UpgradeName, func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		minCommissionRate := sdk.NewDecWithPrec(5, 2)
+
 		// Set MinCommissionRate to 0.05
-		params := app.StakingKeeper.GetParams(ctx)
-		params.MinCommissionRate = sdk.NewDecWithPrec(5, 2)
-		minCommissionRate := params.MinCommissionRate
+		params := stakingtypes.NewParams(
+			app.StakingKeeper.UnbondingTime(ctx),
+			app.StakingKeeper.MaxValidators(ctx),
+			app.StakingKeeper.MaxEntries(ctx),
+			app.StakingKeeper.HistoricalEntries(ctx),
+			app.StakingKeeper.BondDenom(ctx),
+			minCommissionRate,
+		)
+
 		app.StakingKeeper.SetParams(ctx, params)
 
 		// force an update of validator min commission
