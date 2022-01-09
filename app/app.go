@@ -95,7 +95,7 @@ import (
 const (
 	AccountAddressPrefix = "chihuahua"
 	Name                 = "chihuahua"
-	upgradeName          = ""
+	upgradeName          = "spirit-of-the-wolf"
 	minComRate           = 5
 )
 
@@ -623,6 +623,7 @@ func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
 				app.StakingKeeper.SetValidator(ctx, v)
 			}
 		}
+		vm[upgradetypes.ModuleName] = 1
 		return app.mm.RunMigrations(ctx, cfg, vm)
 	})
 }

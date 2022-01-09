@@ -5,12 +5,11 @@ set -o errexit -o nounset
 CHAINID="test"
 
 # Build genesis file incl account for passed address
-coins="10000000000stake,100000000000samoleans"
-chihuahuad init $CHAINID --chain-id $CHAINID 
+coins="100000000000stake,100000000000samoleans"
+# chihuahuad init $CHAINID --chain-id $CHAINID 
 chihuahuad keys add validator --keyring-backend="test"
-# this won't work because the some proto types are decalared twice and the logs output to stdout (dependency hell involving iavl)
 chihuahuad add-genesis-account $(chihuahuad keys show validator -a --keyring-backend="test") $coins
-chihuahuad gentx validator 5000000000stake --keyring-backend="test" --chain-id $CHAINID
+chihuahuad gentx validator 5000000000stake --keyring-backend="test" --chain-id $CHAINID --commission-rate "0.01"
 chihuahuad collect-gentxs
 
 # Set proper defaults and change ports
