@@ -87,13 +87,13 @@ import (
 	"github.com/tendermint/spm/openapiconsole"
 
 	"github.com/ChihuahuaChain/chihuahua/docs"
-
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
 const (
 	AccountAddressPrefix = "chihuahua"
 	Name                 = "chihuahua"
+	v1UpgradeName        = "angryandy"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -295,6 +295,10 @@ func New(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
+
+	// upgrade handlers
+	cfg := module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.RegisterUpgradeHandlers(cfg)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -598,4 +602,35 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
+}
+
+// RegisterUpgradeHandlers returns upgrade handlers
+func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
+	app.UpgradeKeeper.SetUpgradeHandler(v1UpgradeName, func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		// Set MinCommissionRate to 0.05
+		params := app.StakingKeeper.GetParams(ctx)
+		params.MinCommissionRate = sdk.NewDecWithPrec(5, 2)
+		minCommissionRate := params.MinCommissionRate
+		app.StakingKeeper.SetParams(ctx, params)
+
+		// force an update of validator min commission
+		validators := app.StakingKeeper.GetAllValidators(ctx)
+
+		for _, v := range validators {
+			if v.Commission.Rate.LT(minCommissionRate) {
+				if v.Commission.MaxRate.LT(minCommissionRate) {
+					v.Commission.MaxRate = minCommissionRate
+				}
+
+				v.Commission.Rate = minCommissionRate
+				v.Commission.UpdateTime = ctx.BlockHeader().Time
+
+				// call the before-modification hook since we're about to update the commission
+				app.StakingKeeper.BeforeValidatorModified(ctx, v.GetOperator())
+
+				app.StakingKeeper.SetValidator(ctx, v)
+			}
+		}
+		return app.mm.RunMigrations(ctx, cfg, vm)
+	})
 }
