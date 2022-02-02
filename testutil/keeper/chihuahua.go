@@ -3,8 +3,8 @@ package keeper
 import (
 	"testing"
 
-	"github.com/ChihuahuaChain/chihuahua/x/chihuahua/keeper"
-	"github.com/ChihuahuaChain/chihuahua/x/chihuahua/types"
+	"github.com/ChihuahuaChain/chihuahua/x/nft/keeper"
+	"github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"

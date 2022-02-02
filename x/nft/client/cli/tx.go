@@ -2,34 +2,59 @@ package cli
 
 import (
 	"fmt"
-	"time"
+	"strings"
 
 	"github.com/spf13/cobra"
 
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/ChihuahuaChain/chihuahua/x/nft/types"
-)
-
-var (
-	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
-)
-
-const (
-	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/version"
 )
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                        types.ModuleName,
-		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
+	nftTxCmd := &cobra.Command{
+		Use:                        nft.ModuleName,
+		Short:                      "nft transactions subcommands",
+		Long:                       "Provides the most common nft logic for upper-level applications, compatible with Ethereum's erc721 contract",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
 
-	// this line is used by starport scaffolding # 1
+	nftTxCmd.AddCommand(
+		NewCmdSend(),
+	)
 
+	return nftTxCmd
+}
+
+func NewCmdSend() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "send [class-id] [nft-id] [receiver] --from [sender]",
+		Args:  cobra.ExactArgs(3),
+		Short: "transfer ownership of nft",
+		Long: strings.TrimSpace(fmt.Sprintf(`
+			$ %s tx %s send <class-id> <nft-id> <receiver> --from <sender> --chain-id <chain-id>`, version.AppName, nft.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := nft.MsgSend{
+				ClassId:  args[0],
+				Id:       args[1],
+				Sender:   clientCtx.GetFromAddress().String(),
+				Receiver: args[2],
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }

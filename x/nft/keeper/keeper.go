@@ -1,36 +1,30 @@
 package keeper
 
 import (
-	"fmt"
-
-	"github.com/tendermint/tendermint/libs/log"
-
-	"github.com/ChihuahuaChain/chihuahua/x/nft/types"
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
-type (
-	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey sdk.StoreKey
-		memKey   sdk.StoreKey
-	}
-)
-
-func NewKeeper(
-	cdc codec.BinaryCodec,
-	storeKey,
-	memKey sdk.StoreKey,
-
-) *Keeper {
-	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
-	}
+// Keeper of the nft store
+type Keeper struct {
+	cdc      codec.BinaryCodec
+	storeKey storetypes.StoreKey
+	bk       nft.BankKeeper
 }
 
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+// NewKeeper creates a new nft Keeper instance
+func NewKeeper(key storetypes.StoreKey,
+	cdc codec.BinaryCodec, ak nft.AccountKeeper, bk nft.BankKeeper,
+) Keeper {
+	// ensure nft module account is set
+	if addr := ak.GetModuleAddress(nft.ModuleName); addr == nil {
+		panic("the nft module account has not been set")
+	}
+
+	return Keeper{
+		cdc:      cdc,
+		storeKey: key,
+		bk:       bk,
+	}
 }

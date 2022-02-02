@@ -2,7 +2,7 @@ syntax = "proto3";
 package ChihuahuaChain.chihuahua.nft;
 
 // this line is used by starport scaffolding # genesis/proto/import
-import "ChihuahuaChain/chihuahua/nft/nft.proto";
+import "chihuahua/nft/nft.proto";
 
 option go_package = "github.com/ChihuahuaChain/chihuahua/x/nft/types";
 
