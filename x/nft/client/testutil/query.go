@@ -1,7 +1,7 @@
 package testutil
 
 import (
-	"github.com/cosmos/cosmos-sdk/x/nft"
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryClass() {

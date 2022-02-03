@@ -22,9 +22,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	//"github.com/cosmos/cosmos-sdk/x/nft"
-
-	"github.com/cosmos/cosmos-sdk/x/nft/simulation"
+	"github.com/ChihuahuaChain/chihuahua/x/nft/simulation"
 )
 
 var (

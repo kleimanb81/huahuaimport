@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/testutil/rest"
-	"github.com/cosmos/cosmos-sdk/x/nft"
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryBalanceGRPC() {
