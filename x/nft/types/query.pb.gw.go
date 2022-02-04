@@ -806,19 +806,19 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "balance", "owner", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "balance", "owner", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Owner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "owner", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Owner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "owner", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Supply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "supply", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Supply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "supply", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_NFTsOfClass_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "nfts", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NFTsOfClass_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "nfts", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_NFT_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "nfts", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NFT_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ChihuahuaChain", "chihuahua", "nft", "nfts", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Class_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "classes", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Class_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"ChihuahuaChain", "chihuahua", "nft", "classes", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Classes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"ChihuahuaChain", "chihuahua", "nft", "classes"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Classes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"ChihuahuaChain", "chihuahua", "nft", "classes"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

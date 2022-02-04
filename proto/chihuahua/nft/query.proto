@@ -2,7 +2,7 @@ syntax = "proto3";
 package ChihuahuaChain.chihuahua.nft;
 
 import "google/api/annotations.proto";
-import "chihuahua/base/query/v1beta1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "chihuahua/nft/nft.proto";
 
 // this line is used by starport scaffolding # 1

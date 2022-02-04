@@ -5,6 +5,8 @@ package ChihuahuaChain.chihuahua.nft;
 
 option go_package = "github.com/ChihuahuaChain/chihuahua/x/nft/types";
 
+import "cosmos/msg/v1/msg.proto";
+
 // Msg defines the nft Msg service.
 service Msg {
   // Send defines a method to send a nft from one account to another account.
