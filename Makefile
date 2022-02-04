@@ -5,6 +5,11 @@ LEDGER_ENABLED ?= true
 SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::') # grab everything after the space in "github.com/tendermint/tendermint v0.34.7"
 BUILDDIR ?= $(CURDIR)/build
+COMMIT := $(shell git log -1 --format='%H')
+DOCKER := $(shell which docker)
+DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+IMAGE := ghcr.io/tendermint/docker-build-proto:latest
+DOCKER_PROTO_BUILDER := docker run -v $(shell pwd):/workspace --workdir /workspace $(IMAGE)
 
 export GO111MODULE = on
 
@@ -79,3 +84,18 @@ install: go.sum
 
 build:
 	go build $(BUILD_FLAGS) -o bin/chihuahuad ./cmd/chihuahuad
+
+
+proto-gen:
+	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
+
+proto-lint:
+	@$(DOCKER_BUF) lint --error-format=json
+
+proto-format:
+	@echo "Formatting Protobuf files"
+	@$(DOCKER_PROTO_BUILDER) find . -name '*.proto' -path "./proto/*" -exec clang-format -i {} \;
+.PHONY: proto-format
+
+build-docker:
+	$(DOCKER) build -t ChihuahuaChain/chihuahua -f docker/Dockerfile .

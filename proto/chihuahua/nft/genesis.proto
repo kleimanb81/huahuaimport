@@ -1,0 +1,23 @@
+syntax = "proto3";
+package ChihuahuaChain.chihuahua.nft;
+
+// this line is used by starport scaffolding # genesis/proto/import
+import "chihuahua/nft/nft.proto";
+
+option go_package = "github.com/ChihuahuaChain/chihuahua/x/nft/types";
+
+// GenesisState defines the nft module's genesis state.
+message GenesisState {
+  // class defines the class of the nft type.
+  repeated ChihuahuaChain.chihuahua.nft.Class classes = 1;
+  repeated Entry                    entries = 2;
+}
+
+// Entry Defines all nft owned by a person
+message Entry {
+  // owner is the owner address of the following nft
+  string owner = 1;
+
+  // nfts is a group of nfts of the same owner
+  repeated ChihuahuaChain.chihuahua.nft.NFT nfts = 2;
+}
