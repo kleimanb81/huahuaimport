@@ -88,7 +88,10 @@ import (
 
 	"github.com/ChihuahuaChain/chihuahua/docs"
 
-	// this line is used by starport scaffolding # stargate/app/moduleImport
+	nftmodule "github.com/ChihuahuaChain/chihuahua/x/nft"
+		nftmodulekeeper "github.com/ChihuahuaChain/chihuahua/x/nft/keeper"
+		nftmoduletypes "github.com/ChihuahuaChain/chihuahua/x/nft/types"
+// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
 const (
@@ -138,7 +141,8 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
-		// this line is used by starport scaffolding # stargate/app/moduleBasic
+		nftmodule.AppModuleBasic{},
+// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
@@ -206,7 +210,9 @@ type App struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
-	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
+	
+		NftKeeper nftmodulekeeper.Keeper
+// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// the module manager
 	mm *module.Manager
@@ -239,7 +245,8 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		// this line is used by starport scaffolding # stargate/app/storeKey
+		nftmoduletypes.StoreKey,
+// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -336,7 +343,16 @@ func New(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
 		&stakingKeeper, govRouter,
 	)
-	// this line is used by starport scaffolding # stargate/app/keeperDefinition
+	
+		app.NftKeeper = *nftmodulekeeper.NewKeeper(
+			appCodec,
+			keys[nftmoduletypes.StoreKey],
+			keys[nftmoduletypes.MemStoreKey],
+			
+			)
+		nftModule := nftmodule.NewAppModule(appCodec, app.NftKeeper)
+
+		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
@@ -374,7 +390,8 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
-		// this line is used by starport scaffolding # stargate/app/appModule
+		nftModule,
+// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -408,7 +425,8 @@ func New(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
+		nftmoduletypes.ModuleName,
+// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -595,7 +613,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
-	// this line is used by starport scaffolding # stargate/app/paramSubspace
+	paramsKeeper.Subspace(nftmoduletypes.ModuleName)
+// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
 }

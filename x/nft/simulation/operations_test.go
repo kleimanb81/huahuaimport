@@ -10,13 +10,13 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	"github.com/ChihuahuaChain/chihuahua/x/nft/simulation"
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
-	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
-	"github.com/ChihuahuaChain/chihuahua/x/nft/simulation"
 )
 
 type SimTestSuite struct {
