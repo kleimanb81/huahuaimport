@@ -88,8 +88,8 @@ import (
 
 	"github.com/ChihuahuaChain/chihuahua/docs"
 
-	nftmodule "github.com/ChihuahuaChain/chihuahua/x/nft"
 	nftmodulekeeper "github.com/ChihuahuaChain/chihuahua/x/nft/keeper"
+	nftmodule "github.com/ChihuahuaChain/chihuahua/x/nft/module"
 	nftmoduletypes "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )

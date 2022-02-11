@@ -3,8 +3,8 @@ package keeper
 import (
 	"bytes"
 
+	"github.com/ChihuahuaChain/chihuahua/conv"
 	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
-	"github.com/cosmos/cosmos-sdk/internal/conv"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
