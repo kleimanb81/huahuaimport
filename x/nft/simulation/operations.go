@@ -3,6 +3,7 @@ package simulation
 import (
 	"math/rand"
 
+	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -10,7 +11,6 @@ import (
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	nft "github.com/ChihuahuaChain/chihuahua/x/nft/types"
 
 	"github.com/ChihuahuaChain/chihuahua/x/nft/keeper"
 
@@ -18,12 +18,12 @@ import (
 )
 
 const (
-	// Simulation operation weights constants
+	// OpWeightMsgSend Simulation operation weights constants
 	OpWeightMsgSend = "op_weight_msg_send"
 )
 
 const (
-	// nft operations weights
+	// WeightSend nft operations weights
 	WeightSend = 100
 )
 
