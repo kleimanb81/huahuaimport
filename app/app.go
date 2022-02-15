@@ -343,12 +343,14 @@ func New(
 		&stakingKeeper, govRouter,
 	)
 
-	app.NftKeeper = *nftmodulekeeper.NewKeeper(
+	app.NftKeeper = nftmodulekeeper.NewKeeper(
+		keys[nftmodulekeeper.StoreKey],
 		appCodec,
-		keys[nftmoduletypes.StoreKey],
-		keys[nftmoduletypes.MemStoreKey],
+		app.AccountKeeper,
+		//keys[nftmoduletypes.MemStoreKey],
+		app.BankKeeper,
 	)
-	nftModule := nftmodule.NewAppModule(appCodec, app.NftKeeper)
+	nftModule := nftmodule.NewAppModule(appCodec, app.NftKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
